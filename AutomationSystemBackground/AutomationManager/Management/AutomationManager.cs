@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using AutomationSystemCore.Entities;
+using AutomationSystemCore.Management;
 
 namespace AutomationManager.Management
 {

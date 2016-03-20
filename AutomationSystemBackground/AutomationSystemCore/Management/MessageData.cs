@@ -1,4 +1,4 @@
-namespace AutomationManager.Management
+namespace AutomationSystemCore.Management
 {
     public class MessageHeaders
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AutomationManager.Management
+namespace AutomationSystemCore.Management
 {
     public struct DeviceDescriptor
     {

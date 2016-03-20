@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AutomationSystemCore.Entities;
 
 public enum Condition
 {
@@ -26,7 +27,7 @@ public enum Action
     Notification = 8,
 };
 
-namespace AutomationManager.Entities
+namespace AutomationSystemCore.Entities
 {
 	public class AutomationTask
 	{
