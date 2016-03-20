@@ -17,7 +17,7 @@ namespace ElectronicsSystemInterface.Modules
 		public BlinkyLed()
 		{
 			timer = new DispatcherTimer();
-			timer.Interval = TimeSpan.FromMilliseconds(50);
+			timer.Interval = TimeSpan.FromMilliseconds(5000);
 			timer.Tick += Timer_Tick;
 		}
 

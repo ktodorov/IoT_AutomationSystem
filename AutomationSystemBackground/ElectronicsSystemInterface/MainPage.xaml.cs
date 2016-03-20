@@ -1,5 +1,6 @@
 ﻿using ElectronicsSystemInterface.Modules;
 using Microsoft.Azure.Devices.Client;
+using Microsoft.Azure.Devices;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
@@ -26,14 +27,16 @@ namespace ElectronicsSystemInterface
 			this.InitializeComponent();
 
 			blinkyLed.Init();
+
+			Loaded += MainPage_Loaded;
 		}
 
-		private async void Page_Loaded(object sender, RoutedEventArgs e)
+		private async void MainPage_Loaded(object sender, RoutedEventArgs e)
 		{
 			string connectionString = "HostName=AutomationSystemHub.azure-devices.net;DeviceId=test;SharedAccessKey=yGDXie6keh70o03QWjC8+I/fAmIEKgkxAszERplHPyQ=";
 
 			deviceClientSend = DeviceClient.CreateFromConnectionString(connectionString);
-			//deviceClientRecevie = DeviceClient.CreateFromConnectionString(connectionString);
+			deviceClientRecevie = DeviceClient.CreateFromConnectionString(connectionString);
 
 			await SendMessage();
 		}
@@ -47,8 +50,8 @@ namespace ElectronicsSystemInterface
                 var telemetryDataPoint = new
                 {
                     messageNo = x.ToString(),
-                    sendTime = DateTime.Now,
-                    LED = blinkyLed.LedIsOn()
+                    sendTime = DateTime.Now.ToString("HH:mm:ss"),
+                    LEDisOn = blinkyLed.LedIsOn()
                 };
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 var message = new Message(Encoding.ASCII.GetBytes(messageString));
@@ -57,7 +60,7 @@ namespace ElectronicsSystemInterface
 				Debug.WriteLine("{0} > Sending message: {1}", DateTime.Now, messageString);
                 //SendMessages.Items.Add(messageString);
 
-                await Task.Delay(1000);
+                await Task.Delay(5000);
             }
             
 		}
