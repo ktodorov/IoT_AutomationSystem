@@ -1,5 +1,5 @@
-﻿using AutomationManager.Entities;
-using AutomationManager.Management;
+﻿using AutomationSystemCore.Entities;
+using AutomationSystemCore.Management;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 using System;
