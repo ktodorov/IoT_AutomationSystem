@@ -26,7 +26,7 @@ namespace ElectronicsSystemInterface.Modules
 			InitGPIO();
 			if (pin != null)
 			{
-				timer.Start();
+				//timer.Start();
 			}
 		}
 
@@ -65,6 +65,18 @@ namespace ElectronicsSystemInterface.Modules
 				//LED.Fill = grayBrush;
 			}
 		}
+
+        public void On()
+        {
+            pinValue = GpioPinValue.High;
+            pin.Write(pinValue);
+        }
+
+        public void Off()
+        {
+            pinValue = GpioPinValue.Low;
+            pin.Write(pinValue);
+        }
 
 		public bool LedIsOn()
 		{

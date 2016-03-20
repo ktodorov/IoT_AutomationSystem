@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AutomationSystemCore.Entities;
 using AutomationSystemCore.Management;
+using Newtonsoft.Json.Linq;
 
 namespace AutomationManager.Management
 {
@@ -207,13 +208,21 @@ namespace AutomationManager.Management
 
         public void Feed(string message)
         {
-            object jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject(message);
-            TypedMessage messageData = (TypedMessage)jsonData;
+            string jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject(message).ToString();
+            JObject data = JObject.Parse(jsonData);
+
+            var messageData = data.ToObject<TypedMessage>();
+
+            //var messageData = new TypedMessage();
+            //messageData.Data = (object)data.Data;
+            //messageData.Type = data.Type;
+            //TypedMessage messageData = (TypedMessage)jsonData;
             
             switch (messageData.Type)
             {
                 case MessageHeaders.Connect:
                     Connect((string)messageData.Data);
+                    Broadcast(MessageHeaders.TasksList, GetTasks((string)messageData.Data));
                     break;
 
                 case MessageHeaders.Disconnect:
@@ -252,7 +261,8 @@ namespace AutomationManager.Management
             messageData.Type = messageHeader;
             messageData.Data = data;
             string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(messageData);
-            Console.WriteLine("Broadcasting: '{0}'", messageData);
+            Console.WriteLine("Broadcasting: '{0}'", jsonData);
+            Program.sender.Broadcast(jsonData);
         }
 
         private DeviceHolder GetTaskHolder(string taskId)

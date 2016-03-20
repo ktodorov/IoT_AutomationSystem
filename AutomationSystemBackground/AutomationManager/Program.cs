@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AutomationManager
 {
-    class Program
+    public class Program
     {
 		//static ServiceClient serviceClient;
 		static string connectionString = "HostName=AutomationSystemHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=oQnus5yhy5ybc10s8XidG1HOL+SQIRLTzNV7sY2Ba3Q=";
@@ -18,6 +18,7 @@ namespace AutomationManager
 		public static string LastMessage { get; set; }
 
         static Management.AutomationManager manager;
+        public static NetworkSender sender;
 
         static void Main(string[] args)
 		{
@@ -70,6 +71,8 @@ namespace AutomationManager
 			var receiver = new NetworkReceiver();
 			receiver.MessageFeed = Digest;
 			await receiver.Setup(parameters);
+            sender = new NetworkSender();
+            sender.Setup(parameters);
 			await receiver.Receive();
 		}
 

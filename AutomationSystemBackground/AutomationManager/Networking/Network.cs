@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AutomationManager.Networking
 {
-	struct NetworkParameters
+	public struct NetworkParameters
 	{
 		public string ConsumerGroupName;
 		public string DeviceName;
@@ -16,7 +16,7 @@ namespace AutomationManager.Networking
 		public DateTime StartTime;
 	}
 
-	class NetworkReceiver
+	public class NetworkReceiver
 	{
 		private EventHubClient eventHubClient = null;
 		private EventHubReceiver eventHubReceiver = null;
@@ -81,7 +81,7 @@ namespace AutomationManager.Networking
 		}
 	}
 
-	class NetworkSender
+	public class NetworkSender
 	{
 		private string connectionString;
 		private string deviceName;
