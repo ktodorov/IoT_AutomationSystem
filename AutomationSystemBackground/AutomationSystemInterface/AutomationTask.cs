@@ -15,7 +15,8 @@ public enum Sensor
 	Temperature,
 	Light,
 	Pressure,
-	Camera
+	Camera,
+	Clock,
 };
 
 public enum Action
