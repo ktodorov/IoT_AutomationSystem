@@ -1,4 +1,5 @@
-﻿using AutomationManager.Entities;
+﻿using AutomationSystemCore.Entities;
+using AutomationSystemCore.Management;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace AutomationSystemInterface
             txtVal.TextWrapping = TextWrapping.Wrap;
             txtVal.Width = 300;
             txtVal.TextAlignment = TextAlignment.Center;
-            txtVal.FontSize = 30;
+            txtVal.FontSize = 15;
             txtVal.Margin = new Thickness(0, 0, 0, 10);
             txtVal.Text = value;
             return txtVal;
@@ -67,19 +68,89 @@ namespace AutomationSystemInterface
             btn.Click += SomeButton_Click;
             return btn;
         }
+        
+
+        private void SendTemperatureBtn_Click(object sender, RoutedEventArgs e)
+        {
+            //send information to server
+            Slider temp= (Slider)mainPanel.FindName("temperatureScroll");
+            if(temp!=null)
+            {
+                TaskDescriptor desc;
+                desc.DeviceId = "raspberry1";
+                desc.Condition.SensorType = Sensor.Temperature;
+                desc.Condition.ComparisonType = Condition.GreaterThan;
+                desc.Condition.Target = temp.Value;
+                desc.Action.Type = Action.Notification;
+            }
+        }
 
         public void MakePage(string value)
         {
+            mainPanel.Children.Add(AddTextBlock(value));
+            if (value=="Temperature")
+            {
+                Slider scroll = new Slider();
+                scroll.Name = "temperatureScroll";
+                mainPanel.Children.Add(AddTextBlock("Select temperature:"));
+                scroll.Maximum = 40;
+                scroll.Minimum = 0;
+                scroll.SmallChange = 1;
+                scroll.LargeChange = 5;
+                scroll.Margin = new Thickness(100, 0, 100, 0);
+                mainPanel.Children.Add(scroll);
 
-            //if(value=="")
-                mainPanel.Children.Add(AddTextBlock(value));
+
+                Button btnSend = new Button();
+                btnSend.Name="btnSendTemp";
+                btnSend.Content = "Send Data";
+                btnSend.Click += SendTemperatureBtn_Click;
+                btnSend.Background = new SolidColorBrush(Colors.Snow);
+                btnSend.Margin = new Thickness(0, 10, 0, 0);
+                btnSend.Width = 300;
+                btnSend.HorizontalAlignment = HorizontalAlignment.Center;
+                mainPanel.Children.Add(btnSend);
+            }
+            else if (value=="Lamp")
+            {
+                Button btnOn = new Button();
+                btnOn.Name = "btnLOn";
+                btnOn.Content = "Light On";
+                btnOn.Click += BtnOn_Click; 
+                btnOn.Background = new SolidColorBrush(Colors.Snow);
+                btnOn.Margin = new Thickness(0, 10, 0, 0);
+                btnOn.Width = 300;
+                btnOn.HorizontalAlignment = HorizontalAlignment.Center;
+                mainPanel.Children.Add(btnOn);
+
+                Button btnOff = new Button();
+                btnOff.Name = "btnLOf";
+                btnOff.Content = "Light Of";
+                btnOff.Click += BtnOff_Click;
+                btnOff.Background = new SolidColorBrush(Colors.Snow);
+                btnOff.Margin = new Thickness(0, 10, 0, 0);
+                btnOff.Width = 300;
+                btnOff.HorizontalAlignment = HorizontalAlignment.Center;
+                mainPanel.Children.Add(btnOff);
+            }   
             
         }
+
+        private void BtnOff_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BtnOn_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         List<Device> devList = new List<Device>();
         public MainPage()
         {
             this.InitializeComponent();
-            
+            mainPanel.Orientation = Orientation.Vertical;
             mainPanel.Background = new SolidColorBrush(Colors.BurlyWood);
             TextBlock txtb = new TextBlock();
             txtb.Text = "Choose one:";

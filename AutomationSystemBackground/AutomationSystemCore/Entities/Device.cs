@@ -14,11 +14,30 @@ namespace AutomationSystemCore.Entities
 		public List<AutomationTask> Tasks;
 		public List<Sensor> Modules;
 
-		public Device(string id)
+        public List<string> ModuleNames
+        {
+            get
+            {
+                var _moduleNames = new List<string>();
+                foreach (var module in Modules)
+                    _moduleNames.Add(module.ToString());
+
+                return _moduleNames;
+            }
+        }
+
+        public Device(string id)
 		{
             Id = id;
 			Tasks = new List<AutomationTask>();
 		}
+
+        public Device(string devId, List<Sensor> _modules)
+        {
+            Id = devId;
+            Tasks = new List<AutomationTask>();
+            Modules = _modules;
+        }
 
         public string NewTaskId()
         {
