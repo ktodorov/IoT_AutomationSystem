@@ -1,41 +1,52 @@
-﻿using AutomationManager.Sensors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 public enum Condition
 {
-	LessThan = 0,
-	MoreThan = 1,
-	EqualTo = 2
+    LessThan = 0,
+	GreaterThan,
+	EqualTo,
+    Approximately,
 };
 
 public enum Sensor
 {
-	Temperature = 0,
-	Light = 1,
-	Pressure = 2,
-	Camera = 3
+    None = 0,
+	Temperature,
+	Light,
+	Pressure,
+	Camera
+};
+
+public enum Action
+{
+    None = 0,
+    Indication = 1,
+    Facebook = 2,
+    Activation = 4,
+    Notification = 8,
 };
 
 namespace AutomationManager.Entities
 {
 	public class AutomationTask
 	{
-		public Device IoTDevice;
-
+        public string Id;
+        public Device Device;
 		public List<UserMachine> Machines;
 
-		public Condition TaskCondition;
+        public Sensor DeviceSensor;
+        public Condition TaskCondition;
+        public object Value;
+        public object Approximation;
 
-		public Sensor DeviceSensor;
+        public Action ActionType;
+        public object ActionParameter;
 
-		public object Value;
-
-		public AutomationTask()
+        public AutomationTask(Device parent)
 		{
+            Id = parent.NewTaskId();
+            Device = parent;
+
 			Machines = new List<UserMachine>();
 		}
 	}
