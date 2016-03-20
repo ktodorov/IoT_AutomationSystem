@@ -41,7 +41,7 @@ namespace AutomationManager.Networking
 			var pastEvents = await eventHubReceiver.ReceiveAsync(int.MaxValue, TimeSpan.FromSeconds(20));
 		}
 
-		public void StopRecieving()
+		public void StopReceiving()
 		{
 			keepReceiving = false;
 		}
