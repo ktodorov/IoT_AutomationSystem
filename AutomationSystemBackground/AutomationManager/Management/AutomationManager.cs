@@ -26,11 +26,11 @@ namespace AutomationManager.Management
         public bool Present;
     }
 
-    class AutomationManager
+    public class AutomationManager
     {
         private List<DeviceHolder> holders;
 
-        private AutomationManager()
+        public AutomationManager()
         {
             holders = new List<DeviceHolder>();
         }

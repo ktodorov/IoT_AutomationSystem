@@ -29,16 +29,24 @@ namespace AutomationManager.Networking
 		public async Task Setup(NetworkParameters parameters)
 		{
 			eventHubClient = EventHubClient.CreateFromConnectionString(parameters.ConnectionString, "messages/events");
-			var runtimeinfo = eventHubClient.GetRuntimeInformation();
-			partitionsCount = runtimeinfo.PartitionCount;
+            Console.WriteLine("Created client");
+            var runtimeinfo = eventHubClient.GetRuntimeInformation();
+            partitionsCount = runtimeinfo.PartitionCount;
 
-			string partition = EventHubPartitionKeyResolver.ResolveToPartition(parameters.DeviceName, partitionsCount);
+            var partition = EventHubPartitionKeyResolver.ResolveToPartition(parameters.DeviceName, partitionsCount);
+            Console.WriteLine("Got partition");
 
 			if (parameters.StartTime == null)
 				parameters.StartTime = DateTime.Now;
 
 			eventHubReceiver = eventHubClient.GetConsumerGroup(parameters.ConsumerGroupName).CreateReceiver(partition, parameters.StartTime);
-			var pastEvents = await eventHubReceiver.ReceiveAsync(int.MaxValue, TimeSpan.FromSeconds(20));
+            Console.WriteLine("Created reciever");
+
+            var pastEvents = await eventHubReceiver.ReceiveAsync(int.MaxValue, TimeSpan.FromSeconds(3));
+
+            int cnt = 0;
+            foreach (var ev in pastEvents) cnt++;
+            Console.WriteLine("Got {0} events from past", cnt);
 		}
 
 		public void StopReceiving()
@@ -53,12 +61,14 @@ namespace AutomationManager.Networking
 			string deviceId = data.SystemProperties["iothub-connection-device-id"].ToString();
 			IDictionary<string, object> properties = data.Properties;
 
-			if (MessageFeed != null)
+            //Console.WriteLine("Got message '{0}'", message);
+            if (MessageFeed != null)
 				MessageFeed(deviceId, time, message);
 		}
 
 		public async Task Receive()
 		{
+            Console.WriteLine("Awaiting messages");
 			keepReceiving = true;
 			while (keepReceiving)
 			{

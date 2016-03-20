@@ -17,7 +17,9 @@ namespace AutomationManager
 		//static EventProcessorHost eventProcessorHost;
 		public static string LastMessage { get; set; }
 
-		static void Main(string[] args)
+        static Management.AutomationManager manager;
+
+        static void Main(string[] args)
 		{
 			////Console.WriteLine("Send Cloud-to-Device message\n");
 			////serviceClient = ServiceClient.CreateFromConnectionString(connectionString);
@@ -57,11 +59,13 @@ namespace AutomationManager
 
 		static async Task MainAsync(string[] args)
 		{
-			var parameters = new NetworkParameters();
-			parameters.ConnectionString = connectionString;
+            manager = new Management.AutomationManager();
+
+            var parameters = new NetworkParameters();
+			parameters.ConnectionString = "HostName=AutomationSystemHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=oQnus5yhy5ybc10s8XidG1HOL+SQIRLTzNV7sY2Ba3Q=";
 			parameters.ConsumerGroupName = "$Default";
 			parameters.DeviceName = "test";
-			parameters.StartTime = DateTime.Now;
+            parameters.StartTime = DateTime.Now;//Parse("2016-03-20 1:30:42Z");
 
 			var receiver = new NetworkReceiver();
 			receiver.MessageFeed = Digest;
@@ -72,8 +76,9 @@ namespace AutomationManager
 
 		private static void Digest(string devId, DateTime time, string msg)
 		{
-			Console.WriteLine(msg);
-		}
+            //Console.WriteLine(msg);
+            manager.Feed(msg);
+        }
 		
 		private static async Task SendCloudToDeviceMessageAsync()
 		{
