@@ -242,7 +242,8 @@ namespace AutomationManager.Management
                     break;
 
                 case MessageHeaders.CreateTask:
-                    Broadcast(MessageHeaders.TaskCreated, CreateTask((TaskDescriptor)messageData.Data));
+                    var id = CreateTask(((JObject)messageData.Data).ToObject<TaskDescriptor>());
+                    Broadcast(MessageHeaders.CreateTask, messageData.Data);
                     break;
 
                 case MessageHeaders.DeleteTask:

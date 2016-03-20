@@ -27,6 +27,8 @@ namespace ElectronicsSystemInterface
         List<AutomationTask> tasks;
         Device thisDevice;
 
+        DateTime asdf;
+
 		public MainPage()
 		{
 			this.InitializeComponent();
@@ -41,7 +43,7 @@ namespace ElectronicsSystemInterface
 
 		private async void MainPage_Loaded(object sender, RoutedEventArgs e)
 		{
-			string connectionString = "HostName=AutomationSystemHub.azure-devices.net;DeviceId=test;SharedAccessKey=yGDXie6keh70o03QWjC8+I/fAmIEKgkxAszERplHPyQ=";
+			string connectionString = "HostName=AutomationSystemHub.azure-devices.net;DeviceId=test;SharedAccessKey=O/B4sln1uG0KmnBeSeEZoxbVODL27q5coJmd8G/z2s4=";
 
 			deviceClientSend = DeviceClient.CreateFromConnectionString(connectionString);
 			deviceClientRecevie = DeviceClient.CreateFromConnectionString(connectionString);
@@ -108,6 +110,7 @@ namespace ElectronicsSystemInterface
         {
             while (true)
             {
+                ManageTasks();
                 Message receivedMessage = await deviceClientRecevie.ReceiveAsync();
                 if (receivedMessage == null) continue;
 
@@ -118,7 +121,6 @@ namespace ElectronicsSystemInterface
                 JObject data = JObject.Parse(jsonData);
                 var messageData = data.ToObject<TypedMessage>();
 
-                ManageTasks();
                 DigestMessage(messageData);
 
                 await deviceClientRecevie.CompleteAsync(receivedMessage);
@@ -129,15 +131,17 @@ namespace ElectronicsSystemInterface
         {
             if (task.ActionType == Action.Indication)
             {
-                if ((bool)task.ActionParameter)
-                    blinkyLed.On();
-                else
+                if (task.ActionParameter == "true")
                     blinkyLed.Off();
+                else
+                    blinkyLed.On();
             }
         }
 
         private void ManageTasks()
         {
+            bool finished = false;
+
             foreach (var task in tasks)
             {
                 switch (task.DeviceSensor)
@@ -147,16 +151,23 @@ namespace ElectronicsSystemInterface
                     today.AddHours(-today.Hour);
                     today.AddMinutes(-today.Minute);
                     today.AddSeconds(-today.Second);
+                    TimeSpan diff = DateTime.Now - asdf;
                     switch (task.TaskCondition)
                     {
                     case Condition.GreaterThan:
-                        if ((DateTime.Now - today).Seconds > (double)task.Value)
+                        if (diff.Seconds > (double)task.Value)
+                        {
                             DoAction(task);
+                            finished = true;
+                        }
                         break;
                     }
                     break;
                 }
             }
+
+            if (finished)
+                tasks.Clear();
         }
 
         private void DigestMessage(TypedMessage msg)
@@ -164,7 +175,7 @@ namespace ElectronicsSystemInterface
             switch (msg.Type)
             {
                 case MessageHeaders.CreateTask:
-                    TaskDescriptor desc = (TaskDescriptor)msg.Data;
+                    TaskDescriptor desc = ((JObject)msg.Data).ToObject<TaskDescriptor>();
                     AutomationTask newTask = new AutomationTask(thisDevice)
                     {
                         Id = "0",
@@ -176,6 +187,7 @@ namespace ElectronicsSystemInterface
                         ActionType = desc.Action.Type,
                         ActionParameter = desc.Action.Parameter,
                     };
+                    asdf = DateTime.Now;
                     tasks.Add(newTask);
                     break;
             }

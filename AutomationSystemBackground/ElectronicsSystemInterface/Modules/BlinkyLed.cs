@@ -11,13 +11,14 @@ namespace ElectronicsSystemInterface.Modules
 		private GpioPin pin;
 		private GpioPinValue pinValue;
 		private DispatcherTimer timer;
+        int x;
 		private SolidColorBrush redBrush = new SolidColorBrush(Windows.UI.Colors.Red);
 		private SolidColorBrush grayBrush = new SolidColorBrush(Windows.UI.Colors.LightGray);
 
 		public BlinkyLed()
 		{
 			timer = new DispatcherTimer();
-			timer.Interval = TimeSpan.FromMilliseconds(5000);
+			timer.Interval = TimeSpan.FromMilliseconds(500);
 			timer.Tick += Timer_Tick;
 		}
 
@@ -26,7 +27,8 @@ namespace ElectronicsSystemInterface.Modules
 			InitGPIO();
 			if (pin != null)
 			{
-				//timer.Start();
+                x = 0;
+				timer.Start();
 			}
 		}
 
@@ -52,28 +54,32 @@ namespace ElectronicsSystemInterface.Modules
 
 		private void Timer_Tick(object sender, object e)
 		{
+            x++;
+            if (x > 10)
+                return;
+
 			if (pinValue == GpioPinValue.High)
 			{
-				pinValue = GpioPinValue.Low;
-				pin.Write(pinValue);
+                Off();
 				//LED.Fill = redBrush;
 			}
 			else
 			{
-				pinValue = GpioPinValue.High;
-				pin.Write(pinValue);
+                On();
 				//LED.Fill = grayBrush;
 			}
 		}
 
         public void On()
         {
+            System.Diagnostics.Debug.WriteLine("DEVICE LED ON");
             pinValue = GpioPinValue.High;
             pin.Write(pinValue);
         }
 
         public void Off()
         {
+            System.Diagnostics.Debug.WriteLine("DEVICE LED OFF");
             pinValue = GpioPinValue.Low;
             pin.Write(pinValue);
         }
