@@ -162,30 +162,30 @@ namespace AutomationManager.Management
             }
             
             Console.WriteLine("Task {0} for {1} completed!", taskId, holder.Device.Id);
-            switch (thisTask.ActionType)
+            if ((thisTask.ActionType & Action.Indication) == Action.Indication)
+            { /* Do Nothing... */ }
+
+            if ((thisTask.ActionType & Action.Activation) == Action.Activation)
             {
-                case Action.Indication:
-                    break;
-
-                case Action.Activation:
-                    TaskCompletedMessage data = new TaskCompletedMessage
-                    {
-                        TaskId = taskId,
-                        TaskAction = "activation",
-                        Parameter = (string)thisTask.ActionParameter,
-                    };
-                    Broadcast(MessageHeaders.TaskCompleted, data);
-                    break;
-
-                case Action.Facebook:
-                    Console.WriteLine("Celebrating on facebook (:");
-                    break;
-
-                case Action.Notification:
-                    Console.WriteLine("Sending notification to origin device");
-                    break;
+                TaskCompletedMessage data = new TaskCompletedMessage
+                {
+                    TaskId = taskId,
+                    TaskAction = "activation",
+                    Parameter = (string)thisTask.ActionParameter,
+                };
+                Broadcast(MessageHeaders.TaskCompleted, data);
             }
 
+            if ((thisTask.ActionType & Action.Facebook) == Action.Facebook)
+            {
+                Console.WriteLine("Celebrating on facebook (:");
+            }
+
+            if ((thisTask.ActionType & Action.Notification) == Action.Notification)
+            {
+                Console.WriteLine("Sending notification to origin device");
+            }
+            
             DeleteTask(taskId);
         }
 
