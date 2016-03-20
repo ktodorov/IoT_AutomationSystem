@@ -211,8 +211,8 @@ namespace AutomationManager.Management
             
             switch (messageData.Type)
             {
-                case "taskComplete":
-
+                case MessageHeaders.Connect:
+                    Connect((string)messageData.Data);
                     break;
             }
         }
