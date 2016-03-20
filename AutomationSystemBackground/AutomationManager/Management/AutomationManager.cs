@@ -215,6 +215,34 @@ namespace AutomationManager.Management
                 case MessageHeaders.Connect:
                     Connect((string)messageData.Data);
                     break;
+
+                case MessageHeaders.Disconnect:
+                    Disconnect((string)messageData.Data);
+                    break;
+
+                case MessageHeaders.Ping:
+                    Ping((string)messageData.Data);
+                    break;
+
+                case MessageHeaders.GetDevices:
+                    Broadcast(MessageHeaders.DevicesList, GetDevices());
+                    break;
+
+                case MessageHeaders.GetTasks:
+                    Broadcast(MessageHeaders.TasksList, GetTasks((string)messageData.Data));
+                    break;
+
+                case MessageHeaders.CreateTask:
+                    Broadcast(MessageHeaders.TaskCreated, CreateTask((TaskDescriptor)messageData.Data));
+                    break;
+
+                case MessageHeaders.DeleteTask:
+                    Broadcast(MessageHeaders.TaskDeleted, DeleteTask((string)messageData.Data));
+                    break;
+
+                case MessageHeaders.CompleteTask:
+                    CompleteTask((string)messageData.Data);
+                    break;
             }
         }
 
