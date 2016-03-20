@@ -4,54 +4,54 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomationSystemInterface
+namespace AutomationManager.Entities
 {
     public class Device
     {
-        private string deviceName;
-        private List<string> sensors;
+        private static uint NextTaskId = 0;
+        public string Id;
 
-        public string DeviceName
+        public List<AutomationTask> Tasks;
+        public List<Sensor> Modules;
+
+        public List<string> ModuleNames
         {
             get
             {
-                return deviceName;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    deviceName = value;
-                }
-                else
-                    deviceName = "raspberry";
+                var _moduleNames = new List<string>();
+                foreach (var module in Modules)
+                    _moduleNames.Add(module.ToString());
+
+                return _moduleNames;
             }
         }
 
-        public List<string> Sensors
+        public Device(string id)
         {
-            get
-            {
-                return sensors;
-            }
-            set
-            {
-                if(value!=null)
-                {
-                    sensors = value;
-                }
-            }
+            Id = id;
+            Tasks = new List<AutomationTask>();
         }
 
-        public Device(string devName, List<string> devList)
+        public Device(string devId, List<Sensor> _modules)
         {
-            DeviceName = devName;
-            Sensors = devList;
+            Id = devId;
+            Tasks = new List<AutomationTask>();
+            Modules = _modules;
         }
 
-        public Device() : this("", null) { }
+        public string NewTaskId()
+        {
+            ++NextTaskId;
+            uint count = NextTaskId;
 
-        public Device(Device dev) : this(dev.DeviceName, dev.Sensors) { }
+            string result = "";
+            while (count > 0)
+            {
+                result += (count % 26) + 'A';
+                count /= 26;
+            }
 
+            return result;
+        }
     }
 }

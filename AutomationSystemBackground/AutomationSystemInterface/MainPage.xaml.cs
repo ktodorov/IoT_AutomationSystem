@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutomationManager.Entities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -86,25 +87,23 @@ namespace AutomationSystemInterface
             txtb.Margin = new Thickness(0, 20, 0, 20);
             txtb.HorizontalAlignment = HorizontalAlignment.Center;
             mainPanel.Children.Add(txtb);
-            List<string> dev1Sens = new List<string>();
-            dev1Sens.Add("temperature");
-            dev1Sens.Add("light");
-            dev1Sens.Add("camera");
-            
+            List<Sensor> dev1Sens = new List<Sensor>();
+            dev1Sens.Add(Sensor.Temperature);
+            dev1Sens.Add(Sensor.Light);
+            dev1Sens.Add(Sensor.Pressure);
             Device dev1 = new Device("raspberry1", dev1Sens);
             devList.Add(dev1);
-            List<string> dev2Sens = new List<string>();
-            dev2Sens.Add("presure");
-            dev2Sens.Add("microphone");
-            dev2Sens.Add("temperature");
-            dev2Sens.Add("light");
-            dev2Sens.Add("camera");
+            List<Sensor> dev2Sens = new List<Sensor>();
+            dev2Sens.Add(Sensor.Pressure);
+            dev2Sens.Add(Sensor.Camera);
+            dev2Sens.Add(Sensor.Light);
+            dev2Sens.Add(Sensor.Temperature);
             Device dev2 = new Device("raspberry2", dev2Sens);
             devList.Add(dev2);
-            mainPanel.Children.Add(AddButton(dev1.DeviceName));
-            mainPanel.Children.Add(AddSensorsTextBlock(dev1.Sensors));
-            mainPanel.Children.Add(AddButton(dev2.DeviceName));
-            mainPanel.Children.Add(AddSensorsTextBlock(dev2.Sensors));
+            mainPanel.Children.Add(AddButton(dev1.Id));
+            mainPanel.Children.Add(AddSensorsTextBlock(dev1.ModuleNames));
+            mainPanel.Children.Add(AddButton(dev2.Id));
+            mainPanel.Children.Add(AddSensorsTextBlock(dev2.ModuleNames));
            
  
         }
@@ -115,10 +114,10 @@ namespace AutomationSystemInterface
             var btnSender = (Button)sender;
             foreach (var dev in devList)
             {
-                if (btnSender.Content.ToString() == dev.DeviceName)
+                if (btnSender.Content.ToString() == dev.Id)
                 {
                     mainPanel.Children.Clear();
-                    foreach (var elem in dev.Sensors)
+                    foreach (var elem in dev.ModuleNames)
                     {
                         mainPanel.Children.Add(AddButton(elem));
                         //send dev.DeviceName to the server
@@ -126,7 +125,7 @@ namespace AutomationSystemInterface
                 }
                 else
                 {
-                    foreach (var elem in dev.Sensors)
+                    foreach (var elem in dev.ModuleNames)
                     {
                         if (btnSender.Content.ToString() == elem)
                         {
